@@ -75,10 +75,10 @@ export const BLOCK_LABELS = {
 };
 
 export const BLOCK_COLORS = {
-  [STUDY_BLOCKS.MATHEMATICS]: { bg: 'bg-blue-500', light: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-700 dark:text-blue-400', hex: '#3b82f6' },
-  [STUDY_BLOCKS.PYTHON]: { bg: 'bg-green-500', light: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-700 dark:text-green-400', hex: '#22c55e' },
-  [STUDY_BLOCKS.AIML]: { bg: 'bg-purple-500', light: 'bg-purple-100 dark:bg-purple-900/30', text: 'text-purple-700 dark:text-purple-400', hex: '#a855f7' },
-  [STUDY_BLOCKS.REVISION]: { bg: 'bg-amber-500', light: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-400', hex: '#f59e0b' },
+  [STUDY_BLOCKS.MATHEMATICS]: { bg: 'bg-blue-500', border: 'border-l-blue-500', light: 'bg-blue-100 dark:bg-blue-950/50', text: 'text-blue-700 dark:text-blue-300', hex: '#3b82f6' },
+  [STUDY_BLOCKS.PYTHON]: { bg: 'bg-green-500', border: 'border-l-green-500', light: 'bg-green-100 dark:bg-green-950/50', text: 'text-green-700 dark:text-green-300', hex: '#22c55e' },
+  [STUDY_BLOCKS.AIML]: { bg: 'bg-purple-500', border: 'border-l-purple-500', light: 'bg-purple-100 dark:bg-purple-950/50', text: 'text-purple-700 dark:text-purple-300', hex: '#a855f7' },
+  [STUDY_BLOCKS.REVISION]: { bg: 'bg-amber-500', border: 'border-l-amber-500', light: 'bg-amber-100 dark:bg-amber-950/50', text: 'text-amber-700 dark:text-amber-300', hex: '#f59e0b' },
 };
 
 export function getStatusLabel(status) {

@@ -70,7 +70,17 @@ export default function Layout() {
   }, [location.pathname]);
 
   const toggleTheme = () => {
-    updateSettings({ theme: isDark ? 'light' : 'dark' });
+    const nextTheme = isDark ? 'light' : 'dark';
+    updateSettings({ theme: nextTheme });
+    try {
+      localStorage.setItem('theme', nextTheme);
+    } catch (e) {}
+    const root = document.documentElement;
+    if (nextTheme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
   };
 
   const toggleSidebar = () => {

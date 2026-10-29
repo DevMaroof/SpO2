@@ -6,6 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI/ML Study Planner</title>
     <meta name="description" content="Interactive AI/ML Daily Study Planner - Your personal learning dashboard for mathematics, Python, and AI/ML mastery" />
+    <script type="text/javascript">
+      // Immediately apply dark mode class before DOM renders to prevent theme reset on reload
+      (function() {
+        try {
+          var appState = localStorage.getItem('aiml_planner_app_state');
+          var theme = null;
+          if (appState) {
+            theme = JSON.parse(appState)?.settings?.theme;
+          }
+          if (!theme) {
+            theme = localStorage.getItem('theme');
+          }
+          if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
     <!-- Start Single Page Apps for GitHub Pages -->
     <script type="text/javascript">
       // Single Page Apps for GitHub Pages

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useStudy } from '../context/StudyContext';
 import { TASK_STATUSES, calcPercentage } from '../utils/helpers';
 import {
@@ -54,6 +54,16 @@ function CollapsibleSection({ title, icon: Icon, children, defaultOpen = false }
 function LessonView({ lesson, dayNumber, onComplete, onFlag, onBack }) {
   const [showFormulas, setShowFormulas] = useState(false);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && showFormulas) {
+        setShowFormulas(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showFormulas]);
+
   if (!lesson) {
     return (
       <div className="text-center py-16">
@@ -104,8 +114,9 @@ function LessonView({ lesson, dayNumber, onComplete, onFlag, onBack }) {
               </h3>
               <button
                 onClick={() => setShowFormulas(false)}
-                className="md:hidden p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500"
+                className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-colors"
                 aria-label="Close formula reference"
+                title="Close formula reference"
               >
                 <X className="w-5 h-5" />
               </button>

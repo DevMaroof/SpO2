@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useEffect, useCallback, useState } from 'react';
+import { createContext, useContext, useReducer, useEffect, useCallback, useState, useRef } from 'react';
 import storage from '../utils/storage';
 import { getTodayString, TASK_STATUSES, calcPercentage } from '../utils/helpers';
 import { generateStudyDay } from '../data/curriculum';
@@ -269,23 +269,56 @@ function reducer(state, action) {
   }
 }
 
-export function StudyProvider({ children }) {
-  const [state, dispatch] = useReducer(reducer, initialState);
+function getInitialState() {
+  const saved = storage.get('app_state');
+  const storedTheme = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
+  if (saved) {
+    const theme = storedTheme || saved.settings?.theme || initialState.settings.theme;
+    return {
+      ...initialState,
+      ...saved,
+      settings: {
+        ...initialState.settings,
+        ...(saved.settings || {}),
+        theme,
+      },
+    };
+  }
+  if (storedTheme) {
+    return {
+      ...initialState,
+      settings: {
+        ...initialState.settings,
+        theme: storedTheme,
+      },
+    };
+  }
+  return initialState;
+}
 
-  // Load data on mount
+export function StudyProvider({ children }) {
+  const [state, dispatch] = useReducer(reducer, initialState, getInitialState);
+  const isFirstRender = useRef(true);
+
+  // Load data on mount if completely empty
   useEffect(() => {
     const saved = storage.get('app_state');
-    if (saved) {
-      dispatch({ type: ACTIONS.LOAD_DATA, payload: saved });
-    } else {
+    if (!saved) {
       // Initialize with day 1 data
-      initializeDay(1, initialState);
+      initializeDay(1, state);
     }
   }, []);
 
-  // Save to storage on state change
+  // Save to storage on state change (skip initial mount to avoid overwriting)
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
     storage.set('app_state', state);
+    if (state.settings?.theme) {
+      localStorage.setItem('theme', state.settings.theme);
+    }
   }, [state]);
 
   function initializeDay(dayNumber, currentState) {

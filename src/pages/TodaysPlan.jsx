@@ -102,10 +102,10 @@ function TaskItem({
         isStatusOpen ? 'relative z-30' : 'relative z-0'
       } ${
         task.status === TASK_STATUSES.COMPLETED
-          ? 'bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-800'
+          ? 'bg-green-50/80 dark:bg-green-950/20 border-green-200 dark:border-green-800/60'
           : task.status === TASK_STATUSES.NEEDS_REVISION
-          ? 'bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-800'
-          : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+          ? 'bg-amber-50/80 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800/60'
+          : 'bg-gray-50/70 dark:bg-gray-900/60 border-gray-200 dark:border-gray-700/80 hover:border-gray-300 dark:hover:border-gray-600'
       }`}
     >
       <div className="flex items-start gap-3">
@@ -166,10 +166,10 @@ function TaskItem({
             {task.title}
           </p>
           {task.description && (
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{task.description}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-300 mt-0.5 leading-relaxed">{task.description}</p>
           )}
           {task.duration && (
-            <span className="text-xs text-gray-400 flex items-center gap-1 mt-1">
+            <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1 mt-1 font-medium">
               <Clock className="w-3 h-3" />
               {task.duration} min
             </span>
@@ -178,14 +178,14 @@ function TaskItem({
         <div className="flex items-center gap-1 flex-shrink-0">
           <button
             onClick={() => setShowNotes(!showNotes)}
-            className="p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            className="p-1.5 rounded-md hover:bg-gray-200/60 dark:hover:bg-gray-700 text-gray-400 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
             title="Notes"
           >
             <StickyNote className="w-4 h-4" />
           </button>
           <button
             onClick={() => onFlagRevision(task.id, 'task', task.title, task.dayNumber)}
-            className="p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400 hover:text-amber-500"
+            className="p-1.5 rounded-md hover:bg-gray-200/60 dark:hover:bg-gray-700 text-gray-400 dark:text-gray-400 hover:text-amber-500 dark:hover:text-amber-400 transition-colors"
             title="Flag for revision"
           >
             <Flag className="w-4 h-4" />
@@ -271,7 +271,7 @@ function StudyBlock({ block, tasks, filter, onStatusChange, onNotesChange, onFla
         openStatusTaskId ? 'relative z-30' : 'relative z-10'
       }`}
     >
-      <div className={`border-l-4 ${colors.bg} rounded-xl`}>
+      <div className={`border-l-4 ${colors.border || 'border-l-primary-500'} rounded-xl`}>
         <button
           onClick={() => setCollapsed(!collapsed)}
           className="w-full p-3 sm:p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors gap-2"
@@ -279,7 +279,7 @@ function StudyBlock({ block, tasks, filter, onStatusChange, onNotesChange, onFla
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <div>
               <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white text-left truncate">{label}</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400 text-left">
+              <p className="text-xs text-gray-500 dark:text-gray-300 text-left">
                 {duration} min · {completed}/{tasks.length} tasks
               </p>
             </div>
