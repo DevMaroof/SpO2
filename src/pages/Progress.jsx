@@ -149,7 +149,7 @@ export default function Progress() {
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={handleExport}
             className="btn-secondary text-xs flex items-center gap-1.5 py-1.5 px-3"
@@ -175,12 +175,12 @@ export default function Progress() {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 dark:border-gray-800 space-x-6 text-sm">
+      <div className="flex border-b border-gray-200 dark:border-gray-800 space-x-4 sm:space-x-6 text-xs sm:text-sm overflow-x-auto pb-0.5 no-scrollbar whitespace-nowrap">
         <button
           onClick={() => setActiveTab('overview')}
-          className={`pb-3 font-medium transition-colors border-b-2 ${
+          className={`pb-3 font-medium transition-colors border-b-2 shrink-0 ${
             activeTab === 'overview'
-              ? 'border-primary-600 text-primary-600 dark:text-primary-400'
+              ? 'border-primary-600 text-primary-600 dark:text-primary-400 font-semibold'
               : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
           }`}
         >
@@ -188,9 +188,9 @@ export default function Progress() {
         </button>
         <button
           onClick={() => setActiveTab('missed')}
-          className={`pb-3 font-medium transition-colors border-b-2 flex items-center gap-2 ${
+          className={`pb-3 font-medium transition-colors border-b-2 flex items-center gap-2 shrink-0 ${
             activeTab === 'missed'
-              ? 'border-primary-600 text-primary-600 dark:text-primary-400'
+              ? 'border-primary-600 text-primary-600 dark:text-primary-400 font-semibold'
               : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
           }`}
         >
@@ -203,9 +203,9 @@ export default function Progress() {
         </button>
         <button
           onClick={() => setActiveTab('history')}
-          className={`pb-3 font-medium transition-colors border-b-2 ${
+          className={`pb-3 font-medium transition-colors border-b-2 shrink-0 ${
             activeTab === 'history'
-              ? 'border-primary-600 text-primary-600 dark:text-primary-400'
+              ? 'border-primary-600 text-primary-600 dark:text-primary-400 font-semibold'
               : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
           }`}
         >
@@ -304,8 +304,8 @@ export default function Progress() {
               </p>
             </div>
             {/* Filter buttons */}
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs text-gray-500">Block:</span>
+            <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto">
+              <span className="text-xs text-gray-500 mr-1">Block:</span>
               {['all', 'mathematics', 'python', 'aiml', 'revision'].map(b => (
                 <button
                   key={b}

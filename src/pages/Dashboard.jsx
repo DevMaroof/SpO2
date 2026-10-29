@@ -168,82 +168,82 @@ export default function Dashboard() {
   const hasData = stats.totalTasks > 0;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-6 lg:p-8">
+    <div className="max-w-6xl mx-auto space-y-6 pb-12 min-w-0">
       {/* Welcome Section */}
-      <div className="mb-6">
+      <div className="mb-4 sm:mb-6">
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-              <LayoutDashboard className="w-7 h-7 text-blue-500" />
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <LayoutDashboard className="w-6 h-6 sm:w-7 sm:h-7 text-blue-500" />
               Study Dashboard
             </h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mt-0.5">
               Day {currentDayNumber} · Week {stats.currentWeek}
             </p>
           </div>
-          <div className="flex items-center gap-2 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 px-4 py-2 rounded-xl font-semibold">
-            <Flame className="w-5 h-5" />
+          <div className="flex items-center gap-1.5 sm:gap-2 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold">
+            <Flame className="w-4 h-4 sm:w-5 sm:h-5" />
             <span>{streak} day streak</span>
           </div>
         </div>
       </div>
 
       {/* Quick Stats Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 mb-4 sm:mb-6">
         <button
           onClick={() => navigate('/today')}
-          className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow text-left"
+          className="bg-white dark:bg-gray-800 rounded-xl p-3 sm:p-4 shadow-xs border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow text-left min-w-0"
         >
-          <div className="flex items-center justify-between mb-2">
-            <CheckCircle2 className="w-5 h-5 text-green-500" />
-            <span className="text-xs font-medium text-gray-400">{stats.overallCompletion}%</span>
+          <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+            <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
+            <span className="text-[11px] sm:text-xs font-medium text-gray-400">{stats.overallCompletion}%</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">
+          <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white truncate">
             {stats.completedTasks}/{stats.totalTasks}
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Tasks Completed</p>
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">Tasks Done</p>
         </button>
 
         <button
           onClick={() => navigate('/progress')}
-          className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow text-left"
+          className="bg-white dark:bg-gray-800 rounded-xl p-3 sm:p-4 shadow-xs border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow text-left min-w-0"
         >
-          <div className="flex items-center justify-between mb-2">
-            <Clock className="w-5 h-5 text-blue-500" />
-            <span className="text-xs font-medium text-gray-400">total</span>
+          <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+            <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
+            <span className="text-[11px] sm:text-xs font-medium text-gray-400">total</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">
+          <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white truncate">
             {formatTime(stats.totalStudyTime)}
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Study Time</p>
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">Study Time</p>
         </button>
 
         <button
           onClick={() => navigate('/math-assessment')}
-          className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow text-left"
+          className="bg-white dark:bg-gray-800 rounded-xl p-3 sm:p-4 shadow-xs border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow text-left min-w-0"
         >
-          <div className="flex items-center justify-between mb-2">
-            <Award className="w-5 h-5 text-purple-500" />
-            <span className="text-xs font-medium text-gray-400">{stats.totalAnswers} answered</span>
+          <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+            <Award className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" />
+            <span className="text-[11px] sm:text-xs font-medium text-gray-400 truncate ml-1">{stats.totalAnswers} ans</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">
+          <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white truncate">
             {stats.assessmentScore}%
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Assessment Score</p>
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">Assessments</p>
         </button>
 
         <button
           onClick={() => navigate('/revision')}
-          className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow text-left"
+          className="bg-white dark:bg-gray-800 rounded-xl p-3 sm:p-4 shadow-xs border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow text-left min-w-0"
         >
-          <div className="flex items-center justify-between mb-2">
-            <Flag className="w-5 h-5 text-amber-500" />
-            <span className="text-xs font-medium text-gray-400">pending</span>
+          <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+            <Flag className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" />
+            <span className="text-[11px] sm:text-xs font-medium text-gray-400">pending</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">
+          <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white truncate">
             {stats.revisionFlags}
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Revision Items</p>
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">Revision Items</p>
         </button>
       </div>
 
@@ -287,39 +287,47 @@ export default function Dashboard() {
       )}
 
       {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6">
         {/* Pie Chart: Today's completion by block */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-200 dark:border-gray-700">
-          <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 shadow-xs border border-gray-200 dark:border-gray-700 min-w-0">
+          <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center gap-2">
             <Target className="w-4 h-4 text-blue-500" />
             Today&apos;s Completion
           </h3>
           {pieData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={250}>
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={50}
-                  outerRadius={80}
-                  paddingAngle={4}
-                  dataKey="value"
-                  label={({ name, value, total }) => `${name}: ${value}/${total}`}
-                >
-                  {pieData.map((entry, index) => (
-                    <Cell key={entry.name} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: 'var(--tooltip-bg, #fff)',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '8px',
-                  }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
+            <div className="w-full h-[260px] min-w-0">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    cx="50%"
+                    cy="45%"
+                    innerRadius={45}
+                    outerRadius={75}
+                    paddingAngle={4}
+                    dataKey="value"
+                  >
+                    {pieData.map((entry) => (
+                      <Cell key={entry.name} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    formatter={(value, name, item) => [`${value}/${item.payload.total} tasks completed`, name]}
+                    contentStyle={{
+                      backgroundColor: 'var(--tooltip-bg, #fff)',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '8px',
+                      fontSize: '12px',
+                    }}
+                  />
+                  <Legend
+                    verticalAlign="bottom"
+                    iconSize={10}
+                    wrapperStyle={{ fontSize: '12px', paddingTop: '8px' }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           ) : (
             <div className="h-[250px] flex items-center justify-center text-gray-400 dark:text-gray-500">
               <div className="text-center">
@@ -331,8 +339,8 @@ export default function Dashboard() {
         </div>
 
         {/* Bar Chart: Subject progress */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-200 dark:border-gray-700">
-          <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 shadow-xs border border-gray-200 dark:border-gray-700 min-w-0">
+          <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-green-500" />
             Subject Progress
           </h3>
@@ -368,30 +376,32 @@ export default function Dashboard() {
         </div>
 
         {/* Area Chart: Weekly study time */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-200 dark:border-gray-700">
-          <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 shadow-xs border border-gray-200 dark:border-gray-700 min-w-0">
+          <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center gap-2">
             <Clock className="w-4 h-4 text-purple-500" />
             Weekly Study Time
           </h3>
           {areaData.length > 0 && areaData.some(d => d.planned > 0 || d.actual > 0) ? (
-            <ResponsiveContainer width="100%" height={250}>
-              <AreaChart data={areaData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="week" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip
-                  formatter={(value) => [formatTime(value), '']}
-                  contentStyle={{
-                    backgroundColor: '#fff',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '8px',
-                  }}
-                />
-                <Legend />
-                <Area type="monotone" dataKey="planned" stroke="#a855f7" fill="#a855f740" name="Planned" />
-                <Area type="monotone" dataKey="actual" stroke="#3b82f6" fill="#3b82f640" name="Actual" />
-              </AreaChart>
-            </ResponsiveContainer>
+            <div className="w-full h-[250px] min-w-0">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={areaData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis dataKey="week" tick={{ fontSize: 12 }} />
+                  <YAxis tick={{ fontSize: 12 }} />
+                  <Tooltip
+                    formatter={(value) => [formatTime(value), '']}
+                    contentStyle={{
+                      backgroundColor: '#fff',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '8px',
+                    }}
+                  />
+                  <Legend wrapperStyle={{ fontSize: '12px' }} />
+                  <Area type="monotone" dataKey="planned" stroke="#a855f7" fill="#a855f740" name="Planned" />
+                  <Area type="monotone" dataKey="actual" stroke="#3b82f6" fill="#3b82f640" name="Actual" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
           ) : (
             <div className="h-[250px] flex items-center justify-center text-gray-400 dark:text-gray-500">
               <div className="text-center">
@@ -403,35 +413,37 @@ export default function Dashboard() {
         </div>
 
         {/* Line Chart: Assessment scores trend */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-200 dark:border-gray-700">
-          <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 shadow-xs border border-gray-200 dark:border-gray-700 min-w-0">
+          <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center gap-2">
             <Award className="w-4 h-4 text-amber-500" />
             Assessment Scores
           </h3>
           {lineData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={lineData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="day" tick={{ fontSize: 12 }} />
-                <YAxis domain={[0, 100]} tick={{ fontSize: 12 }} />
-                <Tooltip
-                  formatter={(value) => [`${value}%`, 'Score']}
-                  contentStyle={{
-                    backgroundColor: '#fff',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '8px',
-                  }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="score"
-                  stroke="#f59e0b"
-                  strokeWidth={2}
-                  dot={{ r: 4, fill: '#f59e0b' }}
-                  activeDot={{ r: 6 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            <div className="w-full h-[250px] min-w-0">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={lineData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis dataKey="day" tick={{ fontSize: 12 }} />
+                  <YAxis domain={[0, 100]} tick={{ fontSize: 12 }} />
+                  <Tooltip
+                    formatter={(value) => [`${value}%`, 'Score']}
+                    contentStyle={{
+                      backgroundColor: '#fff',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '8px',
+                    }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="score"
+                    stroke="#f59e0b"
+                    strokeWidth={2}
+                    dot={{ r: 4, fill: '#f59e0b' }}
+                    activeDot={{ r: 6 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           ) : (
             <div className="h-[250px] flex items-center justify-center text-gray-400 dark:text-gray-500">
               <div className="text-center">

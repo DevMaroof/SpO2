@@ -197,16 +197,16 @@ export default function PythonAssessment() {
               }`}
             >
               {/* Question Header */}
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-gray-900 dark:text-gray-100 text-base">
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                  <span className="font-bold text-gray-900 dark:text-gray-100 text-sm sm:text-base">
                     Exercise {q.questionNumber}
                   </span>
                   {getDifficultyBadge(q.difficulty)}
-                  <span className="text-xs text-gray-500 font-medium">({q.topic})</span>
+                  <span className="text-xs text-gray-500 font-medium truncate">({q.topic})</span>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                   {isChecked && (
                     <span className={`flex items-center gap-1 text-xs font-bold ${
                       isCorrect ? 'text-green-600' : 'text-red-600'

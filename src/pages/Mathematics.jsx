@@ -20,6 +20,7 @@ import {
   PanelRightClose,
   GraduationCap,
   ListChecks,
+  X,
 } from 'lucide-react';
 
 const MATH_STAGES = [
@@ -79,38 +80,55 @@ function LessonView({ lesson, dayNumber, onComplete, onFlag, onBack }) {
       {formulas.length > 0 && (
         <button
           onClick={() => setShowFormulas(!showFormulas)}
-          className="fixed right-4 top-20 z-30 p-2 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition-colors"
+          className="fixed right-3 sm:right-4 top-20 z-30 p-2 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition-colors"
           title="Toggle formula reference"
+          aria-label="Toggle formula reference"
         >
           {showFormulas ? <PanelRightClose className="w-5 h-5" /> : <PanelRightOpen className="w-5 h-5" />}
         </button>
       )}
 
-      {/* Formula Sidebar */}
+      {/* Formula Sidebar Drawer */}
       {showFormulas && formulas.length > 0 && (
-        <div className="fixed right-0 top-16 bottom-0 w-80 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 overflow-y-auto z-20 p-4 shadow-xl">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-            <Calculator className="w-5 h-5 text-blue-500" />
-            Formula Reference
-          </h3>
-          <div className="space-y-3">
-            {formulas.map((f, i) => (
-              <div key={i} className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                {typeof f === 'string' ? (
-                  <p className="text-sm font-mono text-blue-800 dark:text-blue-300">{f}</p>
-                ) : (
-                  <>
-                    <p className="text-xs font-medium text-blue-600 dark:text-blue-400 mb-1">{f.name || f.label}</p>
-                    <p className="text-sm font-mono text-blue-800 dark:text-blue-300">{f.formula || f.expression || f.value}</p>
-                  </>
-                )}
-              </div>
-            ))}
+        <>
+          <div
+            className="md:hidden fixed inset-0 z-30 bg-black/40 backdrop-blur-xs"
+            onClick={() => setShowFormulas(false)}
+            aria-hidden="true"
+          />
+          <div className="fixed right-0 top-16 bottom-16 md:bottom-0 w-80 max-w-[85vw] bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 overflow-y-auto z-40 p-4 shadow-xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                <Calculator className="w-5 h-5 text-blue-500" />
+                Formula Reference
+              </h3>
+              <button
+                onClick={() => setShowFormulas(false)}
+                className="md:hidden p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500"
+                aria-label="Close formula reference"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="space-y-3">
+              {formulas.map((f, i) => (
+                <div key={i} className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                  {typeof f === 'string' ? (
+                    <p className="text-sm font-mono text-blue-800 dark:text-blue-300 break-words">{f}</p>
+                  ) : (
+                    <>
+                      <p className="text-xs font-medium text-blue-600 dark:text-blue-400 mb-1">{f.name || f.label}</p>
+                      <p className="text-sm font-mono text-blue-800 dark:text-blue-300 break-words">{f.formula || f.expression || f.value}</p>
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        </>
       )}
 
-      <div className={`${showFormulas ? 'mr-80' : ''} transition-all`}>
+      <div className={`${showFormulas ? 'md:mr-80' : ''} transition-all`}>
         {/* Back button and title */}
         <div className="flex items-center gap-3 mb-6">
           <button
@@ -446,7 +464,7 @@ export default function Mathematics() {
 
   if (selectedLesson) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-6 lg:p-8">
+      <div className="max-w-5xl mx-auto space-y-6 pb-12 min-w-0">
         <LessonView
           lesson={selectedLesson}
           dayNumber={selectedDayNumber}
@@ -480,17 +498,17 @@ export default function Mathematics() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-6 lg:p-8">
+    <div className="max-w-5xl mx-auto space-y-6 pb-12 min-w-0">
       <div className="mb-6">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
           <Calculator className="w-7 h-7 text-blue-500" />
           Mathematics
         </h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-1">Master the mathematical foundations of AI/ML</p>
+        <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm sm:text-base">Master the mathematical foundations of AI/ML</p>
       </div>
 
       {/* Stage Tabs */}
-      <div className="flex flex-wrap gap-2 mb-6 overflow-x-auto pb-1">
+      <div className="flex gap-2 mb-6 overflow-x-auto pb-2 no-scrollbar">
         {MATH_STAGES.map(stage => {
           const prog = stageProgress[stage.id] || { total: 0, completed: 0, percent: 0 };
           return (

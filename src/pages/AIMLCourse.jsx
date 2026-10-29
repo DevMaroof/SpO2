@@ -114,21 +114,21 @@ export default function AIMLCourse() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 pb-12">
+    <div className="max-w-7xl mx-auto space-y-6 pb-12 min-w-0">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-200 dark:border-gray-800 pb-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
-            <GraduationCap className="h-8 w-8 text-primary-600 dark:text-primary-400" />
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 sm:gap-3">
+            <GraduationCap className="h-7 w-7 sm:h-8 sm:w-8 text-primary-600 dark:text-primary-400 shrink-0" />
             AI/ML Course Tracker
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mt-1">
             Track lecture attendance, notes, practical assignments, confidence ratings, and revision needs across your course modules.
           </p>
         </div>
         <button
           onClick={() => setIsAddModalOpen(true)}
-          className="btn-primary flex items-center gap-2 text-sm"
+          className="btn-primary flex items-center gap-2 text-xs sm:text-sm py-2 px-3 sm:px-4 shrink-0"
         >
           <Plus className="h-4 w-4" />
           Add Custom Topic
@@ -136,33 +136,33 @@ export default function AIMLCourse() {
       </div>
 
       {/* Progress Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
-        <div className="card p-4 text-center">
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Total Modules</p>
-          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-1">{stats.total}</p>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3">
+        <div className="card p-3 sm:p-4 text-center min-w-0">
+          <p className="text-[11px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 truncate">Total Modules</p>
+          <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mt-1">{stats.total}</p>
         </div>
-        <div className="card p-4 text-center">
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Lectures Attended</p>
-          <p className="text-2xl font-bold text-blue-600 dark:text-blue-400 mt-1">{stats.lectures}/{stats.total}</p>
+        <div className="card p-3 sm:p-4 text-center min-w-0">
+          <p className="text-[11px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 truncate">Lectures</p>
+          <p className="text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400 mt-1">{stats.lectures}/{stats.total}</p>
         </div>
-        <div className="card p-4 text-center">
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Notes Taken</p>
-          <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400 mt-1">{stats.notes}/{stats.total}</p>
+        <div className="card p-3 sm:p-4 text-center min-w-0">
+          <p className="text-[11px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 truncate">Notes Taken</p>
+          <p className="text-xl sm:text-2xl font-bold text-indigo-600 dark:text-indigo-400 mt-1">{stats.notes}/{stats.total}</p>
         </div>
-        <div className="card p-4 text-center">
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Practicals Done</p>
-          <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">{stats.practicals}/{stats.total}</p>
+        <div className="card p-3 sm:p-4 text-center min-w-0">
+          <p className="text-[11px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 truncate">Practicals Done</p>
+          <p className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">{stats.practicals}/{stats.total}</p>
         </div>
-        <div className="card p-4 text-center">
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Average Confidence</p>
-          <p className="text-2xl font-bold text-amber-500 mt-1 flex items-center justify-center gap-1">
-            <Star className="h-5 w-5 fill-amber-400 text-amber-400" />
+        <div className="card p-3 sm:p-4 text-center min-w-0">
+          <p className="text-[11px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 truncate">Avg Confidence</p>
+          <p className="text-xl sm:text-2xl font-bold text-amber-500 mt-1 flex items-center justify-center gap-1">
+            <Star className="h-4 w-4 sm:h-5 sm:w-5 fill-amber-400 text-amber-400 shrink-0" />
             {stats.avgConfidence}
           </p>
         </div>
-        <div className="card p-4 text-center">
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Needs Revision</p>
-          <p className="text-2xl font-bold text-red-500 mt-1">{stats.needsRevision}</p>
+        <div className="card p-3 sm:p-4 text-center min-w-0">
+          <p className="text-[11px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 truncate">Needs Revision</p>
+          <p className="text-xl sm:text-2xl font-bold text-red-500 mt-1">{stats.needsRevision}</p>
         </div>
       </div>
 
@@ -249,43 +249,43 @@ export default function AIMLCourse() {
             </div>
 
             {/* Checklists */}
-            <div className="grid grid-cols-3 gap-2 pt-1 border-t border-gray-100 dark:border-gray-800">
+            <div className="grid grid-cols-3 gap-1.5 sm:gap-2 pt-1 border-t border-gray-100 dark:border-gray-800">
               <button
                 onClick={() => handleToggle(topic.id, 'lectureAttended', topic.lectureAttended)}
-                className={`flex items-center gap-1.5 p-2 rounded-lg text-xs font-medium border transition-all ${
+                className={`flex items-center justify-center gap-1 sm:gap-1.5 p-1.5 sm:p-2 rounded-lg text-[11px] sm:text-xs font-medium border transition-all truncate ${
                   topic.lectureAttended
                     ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300'
                     : 'border-gray-200 dark:border-gray-700 text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800'
                 }`}
               >
-                <Clock className="h-3.5 w-3.5" />
-                <span>Lecture</span>
+                <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0" />
+                <span className="truncate">Lecture</span>
                 {topic.lectureAttended && '✓'}
               </button>
 
               <button
                 onClick={() => handleToggle(topic.id, 'notesCompleted', topic.notesCompleted)}
-                className={`flex items-center gap-1.5 p-2 rounded-lg text-xs font-medium border transition-all ${
+                className={`flex items-center justify-center gap-1 sm:gap-1.5 p-1.5 sm:p-2 rounded-lg text-[11px] sm:text-xs font-medium border transition-all truncate ${
                   topic.notesCompleted
                     ? 'bg-indigo-50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300'
                     : 'border-gray-200 dark:border-gray-700 text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800'
                 }`}
               >
-                <BookOpen className="h-3.5 w-3.5" />
-                <span>Notes</span>
+                <BookOpen className="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0" />
+                <span className="truncate">Notes</span>
                 {topic.notesCompleted && '✓'}
               </button>
 
               <button
                 onClick={() => handleToggle(topic.id, 'practicalCompleted', topic.practicalCompleted)}
-                className={`flex items-center gap-1.5 p-2 rounded-lg text-xs font-medium border transition-all ${
+                className={`flex items-center justify-center gap-1 sm:gap-1.5 p-1.5 sm:p-2 rounded-lg text-[11px] sm:text-xs font-medium border transition-all truncate ${
                   topic.practicalCompleted
                     ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300'
                     : 'border-gray-200 dark:border-gray-700 text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800'
                 }`}
               >
-                <Code2 className="h-3.5 w-3.5" />
-                <span>Practical</span>
+                <Code2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0" />
+                <span className="truncate">Practical</span>
                 {topic.practicalCompleted && '✓'}
               </button>
             </div>

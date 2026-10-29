@@ -67,7 +67,7 @@ export default function TaskCard({
 
   return (
     <div
-      className={`card-hover relative group overflow-hidden transition-all duration-200 ${
+      className={`card-hover relative group transition-all duration-200 ${
         isCompleted ? 'opacity-75' : ''
       } ${isSkipped ? 'opacity-60' : ''}`}
       onClick={onClick}
@@ -77,7 +77,7 @@ export default function TaskCard({
     >
       {/* Block color indicator strip */}
       {blockColor && (
-        <div className={`absolute top-0 left-0 w-1 h-full ${blockColor.bg}`} />
+        <div className={`absolute top-0 left-0 w-1 h-full rounded-l-xl ${blockColor.bg}`} />
       )}
 
       <div className="p-4 pl-5">
@@ -180,7 +180,7 @@ export default function TaskCard({
                     }}
                     aria-hidden="true"
                   />
-                  <div className="absolute right-0 top-full mt-1 z-20 w-44 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1">
+                  <div className="absolute right-0 top-full mt-1 z-30 w-44 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl py-1">
                     {STATUS_OPTIONS.map((opt) => (
                       <button
                         key={opt.value}

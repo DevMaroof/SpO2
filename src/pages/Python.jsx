@@ -51,19 +51,19 @@ function CodeBlock({ code, language = 'python', title }) {
   };
 
   return (
-    <div className="rounded-lg overflow-hidden border border-gray-700 dark:border-gray-600">
+    <div className="rounded-lg overflow-hidden border border-gray-700 dark:border-gray-600 min-w-0">
       <div className="flex items-center justify-between px-3 py-1.5 bg-gray-800 dark:bg-gray-900">
-        <span className="text-xs text-gray-400 font-mono">{title || language}</span>
+        <span className="text-xs text-gray-400 font-mono truncate mr-2">{title || language}</span>
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1 text-xs text-gray-400 hover:text-white transition-colors px-2 py-0.5 rounded"
+          className="flex items-center gap-1 text-xs text-gray-400 hover:text-white transition-colors px-2 py-0.5 rounded shrink-0"
         >
           {copied ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}
           {copied ? 'Copied!' : 'Copy'}
         </button>
       </div>
-      <pre className="p-3 bg-gray-900 dark:bg-gray-950 overflow-x-auto">
-        <code className="text-sm font-mono text-green-400 dark:text-green-300 whitespace-pre">{code}</code>
+      <pre className="p-3 bg-gray-900 dark:bg-gray-950 overflow-x-auto text-xs sm:text-sm">
+        <code className="font-mono text-green-400 dark:text-green-300 whitespace-pre">{code}</code>
       </pre>
     </div>
   );
@@ -421,7 +421,7 @@ export default function Python() {
 
   if (selectedLesson) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-6 lg:p-8">
+      <div className="max-w-5xl mx-auto space-y-6 pb-12 min-w-0">
         <PythonLessonView
           lesson={selectedLesson}
           dayNumber={selectedDayNumber}
@@ -429,11 +429,11 @@ export default function Python() {
           onFlag={handleFlag}
           onBack={() => setSelectedLesson(null)}
         />
-        <div className="flex justify-between mt-6">
+        <div className="flex justify-between items-center gap-2 mt-6">
           {lessonNav.prev ? (
             <button
               onClick={() => handleSelectLesson(lessonNav.prev)}
-              className="flex items-center gap-1 text-sm text-green-600 dark:text-green-400 hover:underline"
+              className="flex items-center gap-1 text-xs sm:text-sm text-green-600 dark:text-green-400 hover:underline"
             >
               <ChevronLeft className="w-4 h-4" /> Previous Lesson
             </button>
@@ -441,7 +441,7 @@ export default function Python() {
           {lessonNav.next ? (
             <button
               onClick={() => handleSelectLesson(lessonNav.next)}
-              className="flex items-center gap-1 text-sm text-green-600 dark:text-green-400 hover:underline"
+              className="flex items-center gap-1 text-xs sm:text-sm text-green-600 dark:text-green-400 hover:underline"
             >
               Next Lesson <ChevronRight className="w-4 h-4" />
             </button>
@@ -452,17 +452,17 @@ export default function Python() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-6 lg:p-8">
+    <div className="max-w-5xl mx-auto space-y-6 pb-12 min-w-0">
       <div className="mb-6">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
           <Code2 className="w-7 h-7 text-green-500" />
           Python Programming
         </h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-1">Learn Python for AI/ML development</p>
+        <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm sm:text-base">Learn Python for AI/ML development</p>
       </div>
 
       {/* Stage Tabs */}
-      <div className="flex flex-wrap gap-2 mb-6 overflow-x-auto pb-1">
+      <div className="flex gap-2 mb-6 overflow-x-auto pb-2 no-scrollbar">
         {PYTHON_STAGES.map(stage => {
           const prog = stageProgress[stage.id] || { total: 0, completed: 0, percent: 0 };
           return (

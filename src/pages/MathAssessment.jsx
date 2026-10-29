@@ -202,16 +202,16 @@ export default function MathAssessment() {
               }`}
             >
               {/* Question Header */}
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-gray-900 dark:text-gray-100 text-base">
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                  <span className="font-bold text-gray-900 dark:text-gray-100 text-sm sm:text-base">
                     Question {q.questionNumber}
                   </span>
                   {getDifficultyBadge(q.difficulty)}
-                  <span className="text-xs text-gray-500 font-medium">({q.topic})</span>
+                  <span className="text-xs text-gray-500 font-medium truncate">({q.topic})</span>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                   {isChecked && (
                     <span className={`flex items-center gap-1 text-xs font-bold ${
                       isCorrect ? 'text-green-600' : 'text-red-600'
@@ -238,14 +238,14 @@ export default function MathAssessment() {
               </div>
 
               {/* Problem Statement */}
-              <p className="text-sm font-medium text-gray-800 dark:text-gray-200 leading-relaxed">
+              <p className="text-xs sm:text-sm font-medium text-gray-800 dark:text-gray-200 leading-relaxed">
                 {q.problem}
               </p>
 
               {/* Hint Box (if revealed) */}
               {isHintRevealed && (
                 <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40 rounded-lg text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2">
-                  <HelpCircle className="h-4 w-4 flex-shrink-0 mt-0.5 text-amber-600" />
+                  <HelpCircle className="h-4 w-4 shrink-0 mt-0.5 text-amber-600" />
                   <div>
                     <span className="font-bold">Hint: </span>
                     {q.hint}
@@ -267,11 +267,11 @@ export default function MathAssessment() {
                     }}
                     className="input-field text-sm font-mono flex-1"
                   />
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 w-full sm:w-auto">
                     <button
                       onClick={() => handleCheckAnswer(q)}
                       disabled={!currentInput.trim() || (isChecked && isCorrect)}
-                      className="btn-primary text-xs py-2 px-4 whitespace-nowrap"
+                      className="btn-primary text-xs py-2 px-3 sm:px-4 flex-1 sm:flex-initial text-center whitespace-nowrap"
                     >
                       Check Answer
                     </button>

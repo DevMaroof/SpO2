@@ -80,21 +80,21 @@ export default function Revision() {
   }, [state.revisionFlags]);
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 pb-12">
+    <div className="max-w-7xl mx-auto space-y-6 pb-12 min-w-0">
       {/* Header and Day Selector */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-200 dark:border-gray-800 pb-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
-            <BookOpen className="h-8 w-8 text-amber-500" />
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 sm:gap-3">
+            <BookOpen className="h-7 w-7 sm:h-8 sm:w-8 text-amber-500 shrink-0" />
             Daily Revision & Recall
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mt-1">
             Consolidate your daily learning with active recall, formula sheets, syntax patterns, and self-assessment.
           </p>
         </div>
 
         {/* Day Selector */}
-        <div className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-1.5 shadow-sm">
+        <div className="flex items-center justify-between w-full sm:w-auto gap-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-1.5 shadow-xs">
           <button
             onClick={() => handleDayChange(activeDay - 1)}
             disabled={activeDay <= 1}
@@ -104,7 +104,7 @@ export default function Revision() {
             <ChevronLeft className="h-5 w-5 text-gray-600 dark:text-gray-300" />
           </button>
           <div className="px-3 text-center">
-            <span className="text-xs text-gray-500 dark:text-gray-400 block font-medium">Study Day</span>
+            <span className="text-[11px] text-gray-500 dark:text-gray-400 block font-medium">Study Day</span>
             <span className="text-base font-bold text-gray-900 dark:text-gray-100">
               {activeDay} <span className="text-xs font-normal text-gray-500">/ {TOTAL_STUDY_DAYS}</span>
             </span>
@@ -125,15 +125,15 @@ export default function Revision() {
         {/* Left Column (2 Cols): Math, Python & AI/ML Connections */}
         <div className="lg:col-span-2 space-y-6">
           {/* Math Summary & Formulas */}
-          <div className="card p-5 space-y-4 border-l-4 border-l-blue-500">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                <Calculator className="h-5 w-5 text-blue-500" />
+          <div className="card p-4 sm:p-5 space-y-4 border-l-4 border-l-blue-500 min-w-0">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h2 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                <Calculator className="h-5 w-5 text-blue-500 shrink-0" />
                 Mathematics Summary & Key Formulas
               </h2>
               <button
                 onClick={() => flagForRevision(`math_rev_${activeDay}`, 'concept', `Math Day ${activeDay}`, activeDay)}
-                className="text-xs text-gray-500 hover:text-amber-500 flex items-center gap-1"
+                className="text-xs text-gray-500 hover:text-amber-500 flex items-center gap-1 shrink-0"
               >
                 <Flag className="h-3.5 w-3.5" />
                 Flag for Later
@@ -162,15 +162,15 @@ export default function Revision() {
           </div>
 
           {/* Python Syntax & Patterns */}
-          <div className="card p-5 space-y-4 border-l-4 border-l-green-500">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                <Code2 className="h-5 w-5 text-green-500" />
+          <div className="card p-4 sm:p-5 space-y-4 border-l-4 border-l-green-500 min-w-0">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h2 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                <Code2 className="h-5 w-5 text-green-500 shrink-0" />
                 Python Syntax & Coding Patterns
               </h2>
               <button
                 onClick={() => flagForRevision(`py_rev_${activeDay}`, 'concept', `Python Day ${activeDay}`, activeDay)}
-                className="text-xs text-gray-500 hover:text-amber-500 flex items-center gap-1"
+                className="text-xs text-gray-500 hover:text-amber-500 flex items-center gap-1 shrink-0"
               >
                 <Flag className="h-3.5 w-3.5" />
                 Flag for Later
@@ -180,9 +180,9 @@ export default function Revision() {
             {revision?.pythonSyntax && revision.pythonSyntax.length > 0 && (
               <div className="space-y-2">
                 {revision.pythonSyntax.map((item, i) => (
-                  <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-800 text-xs">
-                    <span className="font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-0">{item.label}</span>
-                    <code className="bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded font-mono text-green-600 dark:text-green-400 font-semibold">
+                  <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 p-2.5 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-800 text-xs">
+                    <span className="font-medium text-gray-700 dark:text-gray-300">{item.label}</span>
+                    <code className="bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded font-mono text-green-600 dark:text-green-400 font-semibold break-all sm:break-normal">
                       {item.syntax}
                     </code>
                   </div>

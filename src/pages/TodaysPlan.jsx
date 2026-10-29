@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useCallback } from 'react';
+import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { useStudy } from '../context/StudyContext';
 import {
   STUDY_BLOCKS,
@@ -45,18 +45,62 @@ const STATUS_OPTIONS = [
   { value: TASK_STATUSES.SKIPPED, label: 'Skipped', icon: SkipForward, color: 'text-gray-500' },
 ];
 
-function TaskItem({ task, onStatusChange, onNotesChange, onFlagRevision }) {
+function TaskItem({
+  task,
+  isStatusOpen: controlledIsStatusOpen,
+  onToggleStatus: controlledOnToggleStatus,
+  onStatusChange,
+  onNotesChange,
+  onFlagRevision,
+}) {
   const [showNotes, setShowNotes] = useState(false);
   const [notes, setNotes] = useState(task.notes || '');
-  const [showStatus, setShowStatus] = useState(false);
+  const [localShowStatus, setLocalShowStatus] = useState(false);
+  const [openUpward, setOpenUpward] = useState(false);
+  const statusRef = useRef(null);
+
+  const isStatusOpen = controlledIsStatusOpen !== undefined ? controlledIsStatusOpen : localShowStatus;
+  const onToggleStatus = controlledOnToggleStatus || setLocalShowStatus;
 
   const statusOption = STATUS_OPTIONS.find(s => s.value === task.status) || STATUS_OPTIONS[0];
   const StatusIcon = statusOption.icon;
+
+  useEffect(() => {
+    if (!isStatusOpen) return;
+
+    // Check if dropdown would collide with bottom of viewport
+    if (statusRef.current) {
+      const rect = statusRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      setOpenUpward(spaceBelow < 220 && rect.top > 220);
+    }
+
+    const handleClickOutside = (e) => {
+      if (statusRef.current && !statusRef.current.contains(e.target)) {
+        onToggleStatus(false);
+      }
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onToggleStatus(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isStatusOpen, onToggleStatus]);
 
   return (
     <div
       id={`task-${task.id}`}
       className={`p-3 rounded-lg border transition-all ${
+        isStatusOpen ? 'relative z-30' : 'relative z-0'
+      } ${
         task.status === TASK_STATUSES.COMPLETED
           ? 'bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-800'
           : task.status === TASK_STATUSES.NEEDS_REVISION
@@ -65,29 +109,46 @@ function TaskItem({ task, onStatusChange, onNotesChange, onFlagRevision }) {
       }`}
     >
       <div className="flex items-start gap-3">
-        <div className="relative mt-1">
+        <div ref={statusRef} className="relative mt-1">
           <button
-            onClick={() => setShowStatus(!showStatus)}
-            className={`${statusOption.color} hover:opacity-80`}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleStatus(!isStatusOpen);
+            }}
+            className={`${statusOption.color} hover:opacity-80 transition-opacity p-0.5 rounded focus:outline-none focus:ring-2 focus:ring-blue-500`}
             title={statusOption.label}
+            aria-expanded={isStatusOpen}
+            aria-haspopup="true"
           >
             <StatusIcon className="w-5 h-5" />
           </button>
-          {showStatus && (
-            <div className="absolute top-7 left-0 z-20 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1 min-w-[160px]">
+          {isStatusOpen && (
+            <div
+              className={`absolute ${
+                openUpward ? 'bottom-8' : 'top-7'
+              } left-0 z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl py-1 min-w-[160px] animate-in fade-in duration-100`}
+            >
               {STATUS_OPTIONS.map(opt => {
                 const Icon = opt.icon;
+                const isSelected = task.status === opt.value;
                 return (
                   <button
                     key={opt.value}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       onStatusChange(task.id, opt.value);
-                      setShowStatus(false);
+                      onToggleStatus(false);
                     }}
-                    className="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 w-full text-left text-sm"
+                    className={`flex items-center gap-2 px-3 py-2 w-full text-left text-sm transition-colors ${
+                      isSelected
+                        ? 'bg-blue-50 dark:bg-blue-900/20 font-medium'
+                        : 'hover:bg-gray-50 dark:hover:bg-gray-700'
+                    }`}
                   >
                     <Icon className={`w-4 h-4 ${opt.color}`} />
-                    <span className="text-gray-700 dark:text-gray-300">{opt.label}</span>
+                    <span className={isSelected ? 'text-blue-700 dark:text-blue-300' : 'text-gray-700 dark:text-gray-300'}>
+                      {opt.label}
+                    </span>
                   </button>
                 );
               })}
@@ -132,7 +193,7 @@ function TaskItem({ task, onStatusChange, onNotesChange, onFlagRevision }) {
         </div>
       </div>
       {showNotes && (
-        <div className="mt-2 pl-8">
+        <div className="mt-2 pl-0 sm:pl-8">
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
@@ -149,6 +210,7 @@ function TaskItem({ task, onStatusChange, onNotesChange, onFlagRevision }) {
 
 function StudyBlock({ block, tasks, filter, onStatusChange, onNotesChange, onFlagRevision, onTimeRecorded }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [openStatusTaskId, setOpenStatusTaskId] = useState(null);
   const label = BLOCK_LABELS[block];
   const colors = BLOCK_COLORS[block];
   const duration = BLOCK_DURATIONS[block];
@@ -204,41 +266,45 @@ function StudyBlock({ block, tasks, filter, onStatusChange, onNotesChange, onFla
   };
 
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden`}>
-      <div className={`border-l-4 ${colors.bg}`}>
+    <div
+      className={`bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all ${
+        openStatusTaskId ? 'relative z-30' : 'relative z-10'
+      }`}
+    >
+      <div className={`border-l-4 ${colors.bg} rounded-xl`}>
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="w-full p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+          className="w-full p-3 sm:p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors gap-2"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <div>
-              <h3 className="text-base font-semibold text-gray-900 dark:text-white text-left">{label}</h3>
+              <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white text-left truncate">{label}</h3>
               <p className="text-xs text-gray-500 dark:text-gray-400 text-left">
                 {duration} min · {completed}/{tasks.length} tasks
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-2 min-w-[120px]">
-              <div className="w-20 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="w-14 sm:w-20 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <div
                   className={`h-2 rounded-full transition-all ${colors.bg}`}
                   style={{ width: `${percent}%` }}
                 />
               </div>
-              <span className="text-xs font-medium text-gray-500 dark:text-gray-400">{percent}%</span>
+              <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 min-w-[28px] text-right">{percent}%</span>
             </div>
-            {collapsed ? <ChevronDown className="w-5 h-5 text-gray-400" /> : <ChevronUp className="w-5 h-5 text-gray-400" />}
+            {collapsed ? <ChevronDown className="w-5 h-5 text-gray-400 shrink-0" /> : <ChevronUp className="w-5 h-5 text-gray-400 shrink-0" />}
           </div>
         </button>
 
         {!collapsed && (
-          <div className="px-4 pb-4 space-y-2">
+          <div className="px-3 sm:px-4 pb-4 space-y-2">
             {/* Timer */}
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex flex-wrap items-center gap-2 mb-3">
               <button
                 onClick={handleTimerToggle}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                   isThisBlockActive
                     ? 'bg-red-100 hover:bg-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50 text-red-700 dark:text-red-400'
                     : `${colors.light} ${colors.text} hover:opacity-85`
@@ -257,7 +323,7 @@ function StudyBlock({ block, tasks, filter, onStatusChange, onNotesChange, onFla
                     {isThisBlockRunning ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
                     {isThisBlockRunning ? 'Pause' : 'Resume'}
                   </button>
-                  <span className={`text-sm font-mono font-bold tabular-nums ${isThisBlockRunning ? 'text-green-600 dark:text-green-400 animate-pulse' : 'text-gray-500'}`}>
+                  <span className={`text-xs sm:text-sm font-mono font-bold tabular-nums ${isThisBlockRunning ? 'text-green-600 dark:text-green-400 animate-pulse' : 'text-gray-500'}`}>
                     {formatTimerSeconds(timer.seconds)}
                   </span>
                 </>
@@ -269,6 +335,8 @@ function StudyBlock({ block, tasks, filter, onStatusChange, onNotesChange, onFla
                 <TaskItem
                   key={task.id}
                   task={task}
+                  isStatusOpen={openStatusTaskId === task.id}
+                  onToggleStatus={(isOpen) => setOpenStatusTaskId(isOpen ? task.id : null)}
                   onStatusChange={onStatusChange}
                   onNotesChange={onNotesChange}
                   onFlagRevision={onFlagRevision}
@@ -353,42 +421,46 @@ export default function TodaysPlan() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-6 lg:p-8">
+    <div className="max-w-5xl mx-auto space-y-5 pb-32 md:pb-20 min-w-0">
       {/* Header with Day Selector */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
             Today&apos;s Plan
           </h1>
-          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
+          <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mt-0.5">
             Week {Math.ceil(dayNumber / 5)} · {formatTime(240)} planned
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handlePrevDay}
-            disabled={dayNumber <= 1}
-            className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-          </button>
-          <div className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg min-w-[100px] text-center">
-            <span className="text-lg font-bold text-gray-900 dark:text-white">Day {dayNumber}</span>
+        <div className="flex items-center justify-between w-full sm:w-auto gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <button
+              onClick={handlePrevDay}
+              disabled={dayNumber <= 1}
+              className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              aria-label="Previous day"
+            >
+              <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            </button>
+            <div className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg min-w-[90px] sm:min-w-[100px] text-center shadow-xs">
+              <span className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">Day {dayNumber}</span>
+            </div>
+            <button
+              onClick={handleNextDay}
+              className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              aria-label="Next day"
+            >
+              <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            </button>
           </div>
-          <button
-            onClick={handleNextDay}
-            className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-          </button>
           {dayNumber !== currentDayNumber && (
             <button
               onClick={() => {
                 setDayNumber(currentDayNumber);
                 goToDay(currentDayNumber);
               }}
-              className="ml-2 text-sm text-blue-600 dark:text-blue-400 hover:underline"
+              className="text-xs sm:text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline px-2 py-1 rounded"
             >
               Go to current
             </button>
@@ -397,10 +469,10 @@ export default function TodaysPlan() {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-wrap items-center gap-3 mb-4">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
         <button
           onClick={scrollToNextIncomplete}
-          className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+          className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3.5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-xs sm:text-sm font-medium shadow-xs"
         >
           <Play className="w-4 h-4" />
           Continue Learning
@@ -408,7 +480,7 @@ export default function TodaysPlan() {
         {missedTasks.length > 0 && (
           <button
             onClick={() => setShowMissed(!showMissed)}
-            className="flex items-center gap-1.5 px-4 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-lg hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors text-sm font-medium"
+            className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3.5 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-lg hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors text-xs sm:text-sm font-medium"
           >
             <AlertTriangle className="w-4 h-4" />
             Review Missed ({missedTasks.length})
@@ -417,13 +489,13 @@ export default function TodaysPlan() {
       </div>
 
       {/* Filter Bar */}
-      <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
         <Filter className="w-4 h-4 text-gray-400 flex-shrink-0" />
         {FILTERS.map(f => (
           <button
             key={f.key}
             onClick={() => setFilter(f.key)}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+            className={`px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium whitespace-nowrap transition-colors ${
               filter === f.key
                 ? 'bg-blue-600 text-white'
                 : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
@@ -436,7 +508,7 @@ export default function TodaysPlan() {
 
       {/* Missed Tasks Panel */}
       {showMissed && missedTasks.length > 0 && (
-        <div className="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800 rounded-xl p-4 mb-5">
+        <div className="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800 rounded-xl p-4 mb-2">
           <h3 className="text-sm font-semibold text-amber-800 dark:text-amber-400 mb-3 flex items-center gap-2">
             <AlertTriangle className="w-4 h-4" />
             Missed Tasks from Previous Days
@@ -500,22 +572,22 @@ export default function TodaysPlan() {
         </div>
       )}
 
-      {/* Summary Bar */}
+      {/* Summary Bar - Placed above mobile bottom nav on mobile, docked at bottom on desktop */}
       {tasks.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-4 py-3 md:pl-72 z-10">
-          <div className="max-w-6xl mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        <div className="fixed bottom-16 lg:bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-800/95 backdrop-blur border-t border-gray-200 dark:border-gray-700 px-3 sm:px-4 py-2.5 sm:py-3 lg:pl-72 z-20 shadow-lg">
+          <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+              <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 truncate">
                 Day {dayNumber} Progress
               </span>
-              <div className="w-32 bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+              <div className="flex-1 max-w-[130px] sm:max-w-xs bg-gray-200 dark:bg-gray-700 rounded-full h-2 sm:h-2.5">
                 <div
-                  className="h-2.5 rounded-full bg-blue-600 transition-all"
+                  className="h-2 sm:h-2.5 rounded-full bg-blue-600 transition-all duration-300"
                   style={{ width: `${totalPercent}%` }}
                 />
               </div>
             </div>
-            <span className="text-sm font-bold text-gray-900 dark:text-white">
+            <span className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white shrink-0">
               {totalCompleted}/{tasks.length} ({totalPercent}%)
             </span>
           </div>

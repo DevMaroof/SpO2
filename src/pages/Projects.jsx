@@ -166,12 +166,12 @@ export default function Projects() {
                   }`}>
                     {proj.number}
                   </span>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h2 className="text-base font-bold text-gray-900 dark:text-gray-100">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <h2 className="text-sm sm:text-base font-bold text-gray-900 dark:text-gray-100">
                         {proj.title}
                       </h2>
-                      <span className="text-[11px] px-2 py-0.5 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium">
+                      <span className="text-[10px] sm:text-[11px] px-1.5 sm:px-2 py-0.5 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium">
                         {proj.difficulty}
                       </span>
                     </div>
