@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # AI/ML Daily Study Planner
 
 An interactive web application that transforms your AI/ML study journey into a structured, trackable learning experience. Built with React, Vite, and Tailwind CSS.
@@ -163,3 +164,7 @@ Each study day follows this fixed 4-hour structure:
 
 MIT
 
+=======
+# SpO2
+Studdy Planner
+>>>>>>> 1b10d5c7a351f179a8a707880c7e110a54d0f5be
