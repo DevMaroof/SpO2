@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useEffect, useCallback } from 'react';
+import { createContext, useContext, useReducer, useEffect, useCallback, useState } from 'react';
 import storage from '../utils/storage';
 import { getTodayString, TASK_STATUSES, calcPercentage } from '../utils/helpers';
 import { generateStudyDay } from '../data/curriculum';
@@ -22,6 +22,11 @@ const ACTIONS = {
   SAVE_REVISION_NOTES: 'SAVE_REVISION_NOTES',
   RESET_DATA: 'RESET_DATA',
   IMPORT_DATA: 'IMPORT_DATA',
+  START_TIMER: 'START_TIMER',
+  PAUSE_TIMER: 'PAUSE_TIMER',
+  RESUME_TIMER: 'RESUME_TIMER',
+  STOP_TIMER: 'STOP_TIMER',
+  RESET_TIMER: 'RESET_TIMER',
 };
 
 const initialState = {
@@ -41,6 +46,7 @@ const initialState = {
   revisionNotes: {},
   revisionFlags: [],
   studySessions: [],
+  activeTimer: null,
 };
 
 function reducer(state, action) {
@@ -181,6 +187,77 @@ function reducer(state, action) {
       };
     }
 
+    case ACTIONS.START_TIMER: {
+      const { block, dayNumber } = action.payload;
+      return {
+        ...state,
+        activeTimer: {
+          block,
+          dayNumber: dayNumber || state.settings.currentStudyDay,
+          startedAt: Date.now(),
+          baseSeconds: 0,
+          isRunning: true,
+        },
+      };
+    }
+
+    case ACTIONS.PAUSE_TIMER: {
+      if (!state.activeTimer || !state.activeTimer.isRunning) return state;
+      const delta = Math.max(0, Math.floor((Date.now() - state.activeTimer.startedAt) / 1000));
+      return {
+        ...state,
+        activeTimer: {
+          ...state.activeTimer,
+          isRunning: false,
+          baseSeconds: (state.activeTimer.baseSeconds || 0) + delta,
+          startedAt: null,
+        },
+      };
+    }
+
+    case ACTIONS.RESUME_TIMER: {
+      if (!state.activeTimer || state.activeTimer.isRunning) return state;
+      return {
+        ...state,
+        activeTimer: {
+          ...state.activeTimer,
+          isRunning: true,
+          startedAt: Date.now(),
+        },
+      };
+    }
+
+    case ACTIONS.STOP_TIMER: {
+      if (!state.activeTimer) return state;
+      let totalSeconds = state.activeTimer.baseSeconds || 0;
+      if (state.activeTimer.isRunning && state.activeTimer.startedAt) {
+        totalSeconds += Math.max(0, Math.floor((Date.now() - state.activeTimer.startedAt) / 1000));
+      }
+      const minutes = Math.max(1, Math.round(totalSeconds / 60));
+      const newSessions = totalSeconds >= 30 ? [
+        ...state.studySessions,
+        {
+          dayNumber: state.activeTimer.dayNumber,
+          block: state.activeTimer.block,
+          minutes,
+          recordedAt: new Date().toISOString(),
+        },
+      ] : state.studySessions;
+
+      return {
+        ...state,
+        studySessions: newSessions,
+        activeTimer: null,
+      };
+    }
+
+    case ACTIONS.RESET_TIMER: {
+      return {
+        ...state,
+        activeTimer: null,
+      };
+    }
+
     case ACTIONS.RESET_DATA:
       return { ...initialState, settings: { ...initialState.settings } };
 
@@ -299,6 +376,53 @@ export function StudyProvider({ children }) {
     initializeDay(dayNumber, state);
     dispatch({ type: ACTIONS.SET_CURRENT_DAY, payload: dayNumber });
   }, [state]);
+
+  // Global timer ticker
+  const [timerTick, setTimerTick] = useState(0);
+
+  useEffect(() => {
+    if (!state.activeTimer?.isRunning) return;
+    const interval = setInterval(() => {
+      setTimerTick(t => (t + 1) % 1000000);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [state.activeTimer?.isRunning]);
+
+  const getTimerForBlock = useCallback((block) => {
+    if (!state.activeTimer || state.activeTimer.block !== block) {
+      return { isRunning: false, isActive: false, seconds: 0 };
+    }
+    let sec = state.activeTimer.baseSeconds || 0;
+    if (state.activeTimer.isRunning && state.activeTimer.startedAt) {
+      sec += Math.max(0, Math.floor((Date.now() - state.activeTimer.startedAt) / 1000));
+    }
+    return {
+      isRunning: state.activeTimer.isRunning,
+      isActive: true,
+      seconds: sec,
+      dayNumber: state.activeTimer.dayNumber,
+    };
+  }, [state.activeTimer, timerTick]);
+
+  const startTimer = useCallback((block, dayNumber) => {
+    dispatch({ type: ACTIONS.START_TIMER, payload: { block, dayNumber } });
+  }, []);
+
+  const pauseTimer = useCallback(() => {
+    dispatch({ type: ACTIONS.PAUSE_TIMER });
+  }, []);
+
+  const resumeTimer = useCallback(() => {
+    dispatch({ type: ACTIONS.RESUME_TIMER });
+  }, []);
+
+  const stopTimer = useCallback(() => {
+    dispatch({ type: ACTIONS.STOP_TIMER });
+  }, []);
+
+  const resetTimer = useCallback(() => {
+    dispatch({ type: ACTIONS.RESET_TIMER });
+  }, []);
 
   const resetData = useCallback(() => {
     dispatch({ type: ACTIONS.RESET_DATA });
@@ -435,6 +559,13 @@ export function StudyProvider({ children }) {
     getStats,
     getMissedTasks,
     initializeDay,
+    activeTimer: state.activeTimer,
+    getTimerForBlock,
+    startTimer,
+    pauseTimer,
+    resumeTimer,
+    stopTimer,
+    resetTimer,
   };
 
   return (

@@ -16,6 +16,7 @@ import {
   ChevronDown,
   ChevronUp,
   Play,
+  Pause,
   AlertTriangle,
   CheckCircle2,
   Filter,
@@ -163,33 +164,43 @@ function StudyBlock({ block, tasks, filter, onStatusChange, onNotesChange, onFla
   const completed = tasks.filter(t => t.status === TASK_STATUSES.COMPLETED).length;
   const percent = calcPercentage(completed, tasks.length);
 
-  const [timerActive, setTimerActive] = useState(false);
-  const [timerMinutes, setTimerMinutes] = useState(0);
-  const [timerSeconds, setTimerSeconds] = useState(0);
-  const timerRef = useRef(null);
+  const {
+    getTimerForBlock,
+    startTimer,
+    pauseTimer,
+    resumeTimer,
+    stopTimer,
+  } = useStudy();
 
-  const startTimer = () => {
-    if (timerActive) {
-      clearInterval(timerRef.current);
-      setTimerActive(false);
-      if (timerMinutes > 0 || timerSeconds > 30) {
-        const totalMin = timerMinutes + (timerSeconds >= 30 ? 1 : 0);
-        if (onTimeRecorded && totalMin > 0) onTimeRecorded(block, totalMin);
-      }
+  const timer = getTimerForBlock(block);
+  const isThisBlockActive = timer.isActive;
+  const isThisBlockRunning = timer.isRunning;
+
+  const handleTimerToggle = () => {
+    if (!isThisBlockActive) {
+      startTimer(block);
     } else {
-      setTimerMinutes(0);
-      setTimerSeconds(0);
-      setTimerActive(true);
-      timerRef.current = setInterval(() => {
-        setTimerSeconds(prev => {
-          if (prev >= 59) {
-            setTimerMinutes(m => m + 1);
-            return 0;
-          }
-          return prev + 1;
-        });
-      }, 1000);
+      stopTimer();
     }
+  };
+
+  const handlePauseResume = (e) => {
+    e.stopPropagation();
+    if (isThisBlockRunning) {
+      pauseTimer();
+    } else {
+      resumeTimer();
+    }
+  };
+
+  const formatTimerSeconds = (totalSeconds) => {
+    const hrs = Math.floor(totalSeconds / 3600);
+    const mins = Math.floor((totalSeconds % 3600) / 60);
+    const secs = totalSeconds % 60;
+    if (hrs > 0) {
+      return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
   };
 
   return (
@@ -226,20 +237,30 @@ function StudyBlock({ block, tasks, filter, onStatusChange, onNotesChange, onFla
             {/* Timer */}
             <div className="flex items-center gap-2 mb-3">
               <button
-                onClick={startTimer}
+                onClick={handleTimerToggle}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                  timerActive
-                    ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
-                    : `${colors.light} ${colors.text}`
+                  isThisBlockActive
+                    ? 'bg-red-100 hover:bg-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50 text-red-700 dark:text-red-400'
+                    : `${colors.light} ${colors.text} hover:opacity-85`
                 }`}
               >
-                {timerActive ? <RotateCcw className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-                {timerActive ? 'Stop' : 'Start Timer'}
+                {isThisBlockActive ? <RotateCcw className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+                {isThisBlockActive ? 'Stop & Record' : 'Start Timer'}
               </button>
-              {timerActive && (
-                <span className="text-sm font-mono text-gray-600 dark:text-gray-400">
-                  {String(timerMinutes).padStart(2, '0')}:{String(timerSeconds).padStart(2, '0')}
-                </span>
+
+              {isThisBlockActive && (
+                <>
+                  <button
+                    onClick={handlePauseResume}
+                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 transition-colors"
+                  >
+                    {isThisBlockRunning ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+                    {isThisBlockRunning ? 'Pause' : 'Resume'}
+                  </button>
+                  <span className={`text-sm font-mono font-bold tabular-nums ${isThisBlockRunning ? 'text-green-600 dark:text-green-400 animate-pulse' : 'text-gray-500'}`}>
+                    {formatTimerSeconds(timer.seconds)}
+                  </span>
+                </>
               )}
             </div>
 

@@ -13,6 +13,10 @@ import {
   BarChart3,
   Sun,
   Moon,
+  Timer,
+  Pause,
+  Play,
+  Square,
   ChevronLeft,
   ChevronRight,
   Menu,
@@ -34,7 +38,16 @@ const NAV_ITEMS = [
 ];
 
 export default function Layout() {
-  const { state, currentDayNumber, updateSettings } = useStudy();
+  const {
+    state,
+    currentDayNumber,
+    updateSettings,
+    activeTimer,
+    getTimerForBlock,
+    pauseTimer,
+    resumeTimer,
+    stopTimer,
+  } = useStudy();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -161,6 +174,36 @@ export default function Layout() {
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Active Study Timer Pill */}
+            {activeTimer && (
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-xs text-emerald-800 dark:text-emerald-300 font-medium shadow-sm">
+                <Timer className={`w-3.5 h-3.5 ${activeTimer.isRunning ? 'animate-pulse text-emerald-600 dark:text-emerald-400' : 'text-gray-400'}`} />
+                <span className="capitalize hidden sm:inline">{activeTimer.block}:</span>
+                <span className="font-mono font-bold tabular-nums">
+                  {(() => {
+                    const sec = getTimerForBlock(activeTimer.block).seconds;
+                    const mins = Math.floor(sec / 60);
+                    const secs = sec % 60;
+                    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+                  })()}
+                </span>
+                <button
+                  onClick={() => activeTimer.isRunning ? pauseTimer() : resumeTimer()}
+                  className="p-1 hover:bg-emerald-200 dark:hover:bg-emerald-800/60 rounded transition-colors text-emerald-700 dark:text-emerald-300"
+                  title={activeTimer.isRunning ? "Pause Timer" : "Resume Timer"}
+                >
+                  {activeTimer.isRunning ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+                </button>
+                <button
+                  onClick={stopTimer}
+                  className="p-1 hover:bg-red-100 dark:hover:bg-red-900/40 rounded text-red-600 dark:text-red-400 transition-colors"
+                  title="Stop & Save Recorded Time"
+                >
+                  <Square className="w-3 h-3 fill-current" />
+                </button>
+              </div>
+            )}
+
             {/* Dark Mode Toggle */}
             <button
               onClick={toggleTheme}
