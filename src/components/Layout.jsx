@@ -13,7 +13,6 @@ import {
   BarChart3,
   Sun,
   Moon,
-  Settings,
   ChevronLeft,
   ChevronRight,
   Menu,
@@ -169,14 +168,6 @@ export default function Layout() {
               aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
             >
               {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
-
-            {/* Settings */}
-            <button
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors"
-              aria-label="Settings"
-            >
-              <Settings className="w-5 h-5" />
             </button>
           </div>
         </header>

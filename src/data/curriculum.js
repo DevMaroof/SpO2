@@ -1285,3 +1285,4 @@ export function generateStudyDay(dayNumber) {
     pythonQuestions: generateDayPythonQuestions(safeDay),
   };
 }
+
