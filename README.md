@@ -1,5 +1,5 @@
 <<<<<<< HEAD
-# AI/ML Daily Study Planner
+# AI/ML PW Course Daily Study Planner
 
 An interactive web application that transforms your AI/ML study journey into a structured, trackable learning experience. Built with React, Vite, and Tailwind CSS.
 
